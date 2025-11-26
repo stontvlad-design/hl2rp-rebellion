@@ -1,89 +1,29 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>HL2RP: Rebellion</title>
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            overflow: hidden;
-            font-family: Arial, sans-serif;
-        }
+<meta charset="UTF-8">
+<title>HL2RP Rebellion</title>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background: url("bg.jpg") no-repeat center center fixed;
+        background-size: cover;
+        font-family: Arial, sans-serif;
+    }
 
-        body {
-            /* фон 16:9 на весь экран */
-            background: #000 url("background.jpg") no-repeat center center fixed;
-            background-size: cover;
-        }
-
-        .overlay {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.95));
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end;
-            padding-bottom: 60px;
-            color: #f0f0f0;
-            text-align: center;
-        }
-
-        .title {
-            font-size: 32px;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-
-        .subtitle {
-            font-size: 14px;
-            opacity: 0.8;
-            margin-bottom: 25px;
-        }
-
-        .bar {
-            width: 40%;
-            max-width: 400px;
-            height: 6px;
-            background: rgba(255,255,255,0.12);
-            border-radius: 999px;
-            overflow: hidden;
-            margin: 0 auto;
-        }
-
-        .bar-inner {
-            width: 40%;
-            height: 100%;
-            background: linear-gradient(90deg, #ff8800, #ffcc66);
-            animation: loading 1.8s infinite ease-in-out;
-        }
-
-        @keyframes loading {
-            0%   { transform: translateX(-100%); }
-            50%  { transform: translateX(20%); }
-            100% { transform: translateX(100%); }
-        }
-
-        .hint {
-            font-size: 12px;
-            opacity: 0.6;
-            margin-top: 12px;
-        }
-    </style>
+    .loading {
+        position: absolute;
+        bottom: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+        font-size: 28px;
+        text-shadow: 0 0 8px black;
+    }
+</style>
 </head>
 <body>
-    <div class="overlay">
-        <div class="title">Half-Life 2 RP: Rebellion</div>
-        <div class="subtitle">Загрузка сервера...</div>
-
-        <div class="bar">
-            <div class="bar-inner"></div>
-        </div>
-
-        <div class="hint">Не закрывайте игру — идёт подключение к серверу.</div>
-    </div>
+    <div class="loading">Загрузка...</div>
 </body>
 </html>
