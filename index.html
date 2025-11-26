@@ -111,39 +111,46 @@
 </div>
 
 
-<!-- JAVASCRIPT: плавная смена фраз -->
 <script>
 const phrases = [
-    "Оставайтесь на своих гражданских позициях.",
-    "Ваше сотрудничество обеспечивает порядок.",
-    "Под слоем пепла кто-то всё ещё сопротивляется.",
-    "Каждый шаг — вызов режиму.",
+    "Те кто идут к бета тесту — те меняют будущее.",
     "Искра становится огнём.",
-    "Город спит, но мы проснулись.",
-    "Антигражданская активность будет подавлена.",
-    "Верность — путь к безопасности.",
-    "Пыль поднимается — и падает.",
-    "Некоторые двери открывают не тех.",
-    "Время — лишь инструмент.",
-    "Статус: стабилизирован.",
-    "Сканирование сектора активно.",
-    "Обнаружена биотическая активность."
+    "Город-17 ждёт новых героев.",
+    "Порядок — это иллюзия, пока никто не сопротивляется.",
+    "Сопротивление укрепляется.",
+    "Тишина — лишь перед бурей.",
+    "Сигналы активности зафиксированы.",
+    "Каждый шаг приближает цель.",
+    "Там, где кончается страх — начинается сила.",
+    "История переписывается прямо сейчас."
 ];
 
-const textBox = document.getElementById("dynamicText");
+const phraseElement = document.getElementById("phrase");
+let lastPhrase = "";
 
 function changePhrase() {
-    textBox.style.opacity = 0;
+    // скрываем плавно
+    phraseElement.style.opacity = "0";
 
     setTimeout(() => {
-        const random = phrases[Math.floor(Math.random() * phrases.length)];
-        textBox.textContent = random;
-        textBox.style.opacity = 1;
-    }, 1200);
+        let newPhrase = lastPhrase;
+
+        // выбираем НОВУЮ фразу, отличную от предыдущей
+        while (newPhrase === lastPhrase) {
+            newPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+        }
+
+        lastPhrase = newPhrase;
+        phraseElement.textContent = newPhrase;
+
+        // показываем плавно
+        phraseElement.style.opacity = "1";
+
+    }, 1200); // задержка под fade-out
 }
 
 changePhrase();
-setInterval(changePhrase, 15000);
+setInterval(changePhrase, 6000); // ← интервал смены фраз
 </script>
 
 </body>
