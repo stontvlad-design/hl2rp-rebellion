@@ -64,7 +64,44 @@
         mix-blend-mode: overlay;
     }
 
-    /* БЛОК С ФРАЗАМИ */
+    /* --- ЛОГО по центру --- */
+    .logo {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -55%);
+        width: 320px;
+        height: auto;
+        opacity: 0;
+        animation: logoFade 1.8s ease-out forwards, logoPulse 4s infinite ease-in-out, glowFlicker 2.4s infinite;
+        filter: drop-shadow(0 0 25px rgba(255,120,0,0.65));
+    }
+
+    /* Плавное появление */
+    @keyframes logoFade {
+        from { opacity: 0; transform: translate(-50%, -60%) scale(0.85); }
+        to   { opacity: 1; transform: translate(-50%, -55%) scale(1); }
+    }
+
+    /* Дыхание свечения */
+    @keyframes logoPulse {
+        0%   { filter: drop-shadow(0 0 15px rgba(255,140,0,0.55)); }
+        50%  { filter: drop-shadow(0 0 35px rgba(255,180,60,0.95)); }
+        100% { filter: drop-shadow(0 0 15px rgba(255,140,0,0.55)); }
+    }
+
+    /* Мерцание */
+    @keyframes glowFlicker {
+        0%   { opacity: 0.97; }
+        25%  { opacity: 1; }
+        35%  { opacity: 0.88; }
+        50%  { opacity: 1; }
+        70%  { opacity: 0.92; }
+        100% { opacity: 1; }
+    }
+
+
+    /* --- БЛОК С ФРАЗАМИ --- */
     .loading-text {
         position: absolute;
         bottom: 60px;
@@ -101,10 +138,15 @@
 
 <body>
 
+<!-- ЭФФЕКТЫ -->
 <div class="noise"></div>
 <div class="scanlines"></div>
 <div class="fade-bottom"></div>
 
+<!-- ЛОГО -->
+<img src="reblogo.png" class="logo">
+
+<!-- ТЕКСТ -->
 <div class="loading-text">
     <div class="red-line"></div>
     <div id="dynamicText">Загрузка…</div>
@@ -125,32 +167,26 @@ const phrases = [
     "История переписывается прямо сейчас."
 ];
 
-const phraseElement = document.getElementById("phrase");
+const textElement = document.getElementById("dynamicText");
 let lastPhrase = "";
 
 function changePhrase() {
-    // скрываем плавно
-    phraseElement.style.opacity = "0";
+    textElement.style.opacity = "0";
 
     setTimeout(() => {
         let newPhrase = lastPhrase;
-
-        // выбираем НОВУЮ фразу, отличную от предыдущей
         while (newPhrase === lastPhrase) {
             newPhrase = phrases[Math.floor(Math.random() * phrases.length)];
         }
-
         lastPhrase = newPhrase;
-        phraseElement.textContent = newPhrase;
+        textElement.textContent = newPhrase;
+        textElement.style.opacity = "1";
 
-        // показываем плавно
-        phraseElement.style.opacity = "1";
-
-    }, 1200); // задержка под fade-out
+    }, 1200);
 }
 
 changePhrase();
-setInterval(changePhrase, 6000); // ← интервал смены фраз
+setInterval(changePhrase, 6000);
 </script>
 
 </body>
