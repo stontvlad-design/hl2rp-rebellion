@@ -10,17 +10,12 @@
         height: 100vh;
         width: 100vw;
         overflow: hidden;
+        /* Изначальный фон */
         background: url("bg.jpg") no-repeat center center fixed;
         background-size: cover;
-        animation: bgMove 20s ease-in-out infinite alternate;
         font-family: "Segoe UI", Arial, sans-serif;
         color: white;
         position: relative;
-    }
-
-    @keyframes bgMove {
-        from { background-position: center; }
-        to   { background-position: center 10%; }
     }
 
     .fade-bottom {
@@ -33,15 +28,16 @@
         pointer-events: none;
     }
 
+    /* Убрали mix-blend-mode, так как он убивает FPS в GMod */
     .noise {
         pointer-events: none;
         position: absolute;
         width: 100%;
         height: 100%;
         background: url("noise.jpg");
-        opacity: 0.08;
-        animation: noiseMove 0.25s steps(4) infinite;
-        mix-blend-mode: screen;
+        opacity: 0.05; /* Низкая прозрачность вместо сложного рендера */
+        /* Резкая, "дерганая" анимация (2 кадра), почти не ест ресурсы */
+        animation: noiseMove 0.5s steps(2) infinite;
     }
 
     @keyframes noiseMove {
@@ -49,6 +45,7 @@
         100% { transform: translate(-5%, -5%); }
     }
 
+    /* Оптимизированные сканлайны без mix-blend-mode */
     .scanlines {
         pointer-events: none;
         position: absolute;
@@ -61,10 +58,10 @@
             rgba(0,0,0,0) 2px
         );
         opacity: 0.4;
-        mix-blend-mode: overlay;
     }
 
     /* --- ЛОГО по центру --- */
+    /* Удалили все плавающие анимации и плавное появление */
     .logo {
         position: absolute;
         top: 50%;
@@ -72,34 +69,9 @@
         transform: translate(-50%, -55%);
         width: 320px;
         height: auto;
-        opacity: 0;
-        animation: logoFade 1.8s ease-out forwards, logoPulse 4s infinite ease-in-out, glowFlicker 2.4s infinite;
-        filter: drop-shadow(0 0 25px rgba(255,120,0,0.65));
+        /* Оставили статичное свечение */
+        filter: drop-shadow(0 0 15px rgba(255,120,0,0.8));
     }
-
-    /* Плавное появление */
-    @keyframes logoFade {
-        from { opacity: 0; transform: translate(-50%, -60%) scale(0.85); }
-        to   { opacity: 1; transform: translate(-50%, -55%) scale(1); }
-    }
-
-    /* Дыхание свечения */
-    @keyframes logoPulse {
-        0%   { filter: drop-shadow(0 0 15px rgba(255,140,0,0.55)); }
-        50%  { filter: drop-shadow(0 0 35px rgba(255,180,60,0.95)); }
-        100% { filter: drop-shadow(0 0 15px rgba(255,140,0,0.55)); }
-    }
-
-    /* Мерцание */
-    @keyframes glowFlicker {
-        0%   { opacity: 0.97; }
-        25%  { opacity: 1; }
-        35%  { opacity: 0.88; }
-        50%  { opacity: 1; }
-        70%  { opacity: 0.92; }
-        100% { opacity: 1; }
-    }
-
 
     /* --- БЛОК С ФРАЗАМИ --- */
     .loading-text {
@@ -109,28 +81,21 @@
         text-align: center;
     }
 
+    /* Убрали пульсацию линии */
     .red-line {
         width: 420px;
         height: 3px;
         margin: 0 auto 15px auto;
         background: #d62929;
         border-radius: 6px;
-        animation: pulse 2s infinite ease-in-out;
-        box-shadow: 0 0 8px #d62929;
+        box-shadow: 0 0 10px #d62929;
     }
 
-    @keyframes pulse {
-        0%   { opacity: 0.6; box-shadow: 0 0 6px #d62929; }
-        50%  { opacity: 1;   box-shadow: 0 0 20px #ff3b3b; }
-        100% { opacity: 0.6; box-shadow: 0 0 6px #d62929; }
-    }
-
+    /* Удалили opacity transition. Текст будет меняться резко */
     #dynamicText {
         margin-top: 10px;
         font-size: 28px;
         font-weight: 300;
-        opacity: 0;
-        transition: opacity 1.2s ease-in-out;
         text-shadow: 0 0 8px rgba(255, 90, 90, 0.55);
     }
 </style>
@@ -138,55 +103,73 @@
 
 <body>
 
-<!-- ЭФФЕКТЫ -->
 <div class="noise"></div>
 <div class="scanlines"></div>
 <div class="fade-bottom"></div>
 
-<!-- ЛОГО -->
 <img src="Reblogo.png" class="logo">
 
-<!-- ТЕКСТ -->
 <div class="loading-text">
     <div class="red-line"></div>
-    <div id="dynamicText">Загрузка…</div>
+    <div id="dynamicText">Подключение к узлу...</div>
 </div>
 
-
 <script>
+// === СИСТЕМА ФРАЗ (Атмосфера HL2RP) ===
 const phrases = [
-    "Те кто идут к бета тесту — те меняют будущее.",
-    "Искра становится огнём.",
-    "Город-17 ждёт новых героев.",
-    "Порядок — это иллюзия, пока никто не сопротивляется.",
-    "Сопротивление укрепляется.",
-    "Тишина — лишь перед бурей.",
-    "Сигналы активности зафиксированы.",
-    "Каждый шаг приближает цель.",
-    "Там, где кончается страх — начинается сила.",
-    "История переписывается прямо сейчас."
+    "Синхронизация биометрических данных...",
+    "Установка соединения с сетью Нексус-Надзора...",
+    "Гражданин, ваше сотрудничество поощряется.",
+    "Загрузка протоколов безопасности Альянса...",
+    "Внимание: Замечена нелегальная активность в Секторе D4.",
+    "Подключение к зашифрованным частотам...",
+    "Они следят. Контролируй свои слова.",
+    "Инициализация системы распределения рационов...",
+    "Доступ к базе данных лоялистов...",
+    "Ожидание авторизации диспетчера..."
 ];
 
 const textElement = document.getElementById("dynamicText");
 let lastPhrase = "";
 
 function changePhrase() {
-    textElement.style.opacity = "0";
-
-    setTimeout(() => {
-        let newPhrase = lastPhrase;
-        while (newPhrase === lastPhrase) {
-            newPhrase = phrases[Math.floor(Math.random() * phrases.length)];
-        }
-        lastPhrase = newPhrase;
-        textElement.textContent = newPhrase;
-        textElement.style.opacity = "1";
-
-    }, 1200);
+    let newPhrase = lastPhrase;
+    // Ищем новую фразу, чтобы она не повторялась
+    while (newPhrase === lastPhrase) {
+        newPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+    }
+    lastPhrase = newPhrase;
+    
+    // Резкая смена текста
+    textElement.textContent = newPhrase;
 }
 
+// Запускаем первую фразу и ставим таймер на смену каждые 6 секунд
 changePhrase();
 setInterval(changePhrase, 6000);
+
+// === СИСТЕМА ФОНОВ ===
+const backgrounds = [
+    "bg.jpg",
+    "bg1.jpg",
+    "bg2.jpg",
+    "bg3.jpg",
+    "bg4.jpg"
+];
+let currentBgIndex = 0;
+
+function changeBackground() {
+    currentBgIndex++;
+    // Если дошли до конца массива - возвращаемся к началу
+    if (currentBgIndex >= backgrounds.length) {
+        currentBgIndex = 0;
+    }
+    // Резко меняем картинку фона
+    document.body.style.backgroundImage = `url('${backgrounds[currentBgIndex]}')`;
+}
+
+// Таймер для фона (смена каждые 15 секунд)
+setInterval(changeBackground, 15000);
 </script>
 
 </body>
